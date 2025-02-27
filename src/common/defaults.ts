@@ -35,6 +35,7 @@ export const RENDERER_OPTIONS: { [_ in rendererType]: string } = {
   interactive: "Interactive (zoomable)",
   image: "Image (exportable)",
 };
+export const DEFAULT_POINTS: number[][] = [[0, 0]];
 
 export const DEFAULT_FUNCTION_INPUTS: Omit<FunctionInputs, "fn" | "r"> = {
   id: "",
@@ -57,6 +58,7 @@ export const DEFAULT_FUNCTION_INPUTS: Omit<FunctionInputs, "fn" | "r"> = {
   color: undefined,
   graphType: "polyline",
   nSamples: undefined,
+  points: DEFAULT_POINTS,
 };
 
 export const FALLBACK_FUNCTION_INPUTS: DeepNonNullable<

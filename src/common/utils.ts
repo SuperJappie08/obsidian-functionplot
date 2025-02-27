@@ -9,6 +9,7 @@ import type {
 import {
   DEFAULT_FUNCTION_INPUTS,
   DEFAULT_PLOT_INPUTS,
+  DEFAULT_POINTS,
   FALLBACK_FUNCTION_INPUTS,
   FALLBACK_PLOT_INPUTS,
 } from "./defaults";
@@ -23,6 +24,28 @@ export function gcd(a: number, b: number): number {
   return !b ? a : gcd(b, a % b);
 }
 
+function parseLaTeX(latex: string | undefined): string | undefined {
+  return latex === undefined
+    ? latex
+    : latex
+        .replace("f(x)=", "")
+        .replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, "($1)/($2)")
+        .replace(/\\cdot/g, "*")
+        .replace(/\^{([^}]*)}/g, "^($1)")
+        .replace(/\\sqrt{([^}]*)}/g, "sqrt($1)")
+        .replace(/\\left\(/g, "(")
+        .replace(/\\right\)/g, ")")
+        .replace(/\\pi/g, "PI")
+        .replace(/\^(\{([^{}]+)\}|(\d+))/g, "^($2$3)")
+        .replace(/\\prime/g, "'")
+        .replace(/\\sum_{([^}]*)}^{([^}]*)}/g, "sum($1, $2)")
+        .replace(/\\int_{([^}]*)}\^{([^}]*)}/g, "integral($1, $2)")
+        .replace(/\\lim_{([^}]*)\to([^}]*)}/g, "limit($1, $2)")
+        .replace(/\\frac{d}{dx}/g, "d/dx")
+        .replace(/\$/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+}
 // TODO make change to returned object reflect in input
 export function toFunctionPlotOptions(
   options: PlotInputs,
@@ -34,7 +57,14 @@ export function toFunctionPlotOptions(
     const output: FunctionPlotDatum = {
       fnType: inputs.fnType,
       graphType: inputs.graphType ?? undefined,
-      fn: inputs.fnType === "linear" ? inputs.fn ?? undefined : undefined,
+      fn:
+        inputs.fnType === "linear"
+          ? parseLaTeX(inputs.fn) ?? undefined
+          : undefined,
+      points:
+        inputs.fnType === "points" && inputs.points !== DEFAULT_POINTS
+          ? inputs.points
+          : undefined,
       scope:
         Object.keys(options.constants).length > 0
           ? (Object.keys(options.constants).reduce((acc, key) => {
@@ -43,7 +73,9 @@ export function toFunctionPlotOptions(
             }, {}) as unknown as { [_: string]: number })
           : undefined,
       vector:
-        inputs.fnType === "vector" && inputs.vector.x && inputs.vector.y
+        inputs.fnType === "vector" &&
+        typeof inputs.vector.x === "number" &&
+        typeof inputs.vector.y === "number"
           ? [inputs.vector.x, inputs.vector.y]
           : undefined,
       offset:
@@ -78,8 +110,11 @@ export function toFunctionPlotOptions(
   function hasFunction(inputs: FunctionInputs): boolean {
     return Boolean(
       (inputs.fnType === "linear" && inputs.fn) ||
-        (inputs.fnType === "vector" && inputs.vector.x && inputs.vector.y) ||
-        (inputs.fnType === "polar" && inputs.r)
+        (inputs.fnType === "vector" &&
+          typeof inputs.vector.x === "number" &&
+          typeof inputs.vector.y === "number") ||
+        (inputs.fnType === "polar" && inputs.r) ||
+        (inputs.fnType === "points" && inputs.points !== DEFAULT_POINTS)
     );
   }
 
@@ -159,7 +194,9 @@ export function insertPlotAsInteractive(
   options: PlotInputs
 ): void {
   const text = `\`\`\`functionplot\n${JSON.stringify(
-    Object.assign({}, options, { target: null })
+    Object.assign({}, options, { target: null }),
+    null,
+    2
   )}\n\`\`\``;
   insertParagraphAtCursor(plugin, editor, text);
 }

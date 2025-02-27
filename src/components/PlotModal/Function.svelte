@@ -7,14 +7,17 @@
   import IconWrapper from "../Primitives/IconWrapper.svelte";
   import OptionsFloater from "../Primitives/OptionsFloater.svelte";
   import Switch from "../Primitives/Switch.svelte";
-
+  import Plus from "svelte-material-icons/Plus.svelte";
   import MenuDown from "svelte-material-icons/MenuDown.svelte";
   import Delete from "svelte-material-icons/Delete.svelte";
+  import Button from "../Primitives/Button.svelte";
 
   export let datum: FunctionInputs, unmount: () => void, legends: boolean;
 
   let showFloater = false;
   let mousePos = { x: 0, y: 0 };
+
+  let points = 1;
 
   function handleClick(e: MouseEvent) {
     showFloater = true;
@@ -23,13 +26,23 @@
     const rect = target.getBoundingClientRect();
     mousePos = { x: rect.right, y: rect.bottom };
   }
+
+  function handlePointsChange(e: MouseEvent) {
+    points += 1;
+    datum.points.push([0, 0]);
+  }
+
+  function removePoint(i: number) {
+    points -= 1;
+    datum.points.remove(datum.points[i]);
+  }
 </script>
 
 <div class="functionplot-item-data">
   <Dropdown bind:value={datum.fnType}>
     <option value="linear">linear</option>
     <option value="polar">polar</option>
-    <!--<option value="points">points</option>-->
+    <option value="points">points</option>
     <option value="vector">vector</option>
   </Dropdown>
 
@@ -51,8 +64,31 @@
       <NumberInput placeholder="Δy" bind:value={datum.vector.y} />
     </div>
   {/if}
+  {#if datum.fnType === "points"}
+    <div style="display: flex; flex-direction: column; gap: 0.5em;">
+      {#each Array(points) as _, i}
+        <div class="functionplot-nums-inputs" style="align-items: center;">
+          <NumberInput placeholder="x" bind:value={datum.points[i][0]} />
+          <NumberInput placeholder="y" bind:value={datum.points[i][1]} />
 
-  <input type="color" bind:value={datum.color} />
+          <IconWrapper
+            style="align-self: center; transform: translateY(0.2em);"
+            on:click={(e) => removePoint(i)}
+          >
+            <Delete size="1.1em" />
+          </IconWrapper>
+        </div>
+      {/each}
+      <div class="fplt-fns-add">
+        <Button style="width: 100%;" on:click={handlePointsChange}>
+          <IconWrapper style="padding: 0.1em; width: 100%;">
+            <Plus />
+          </IconWrapper>
+          Add Point
+        </Button>
+      </div>
+    </div>
+  {/if}
 
   <div>
     <IconWrapper on:click={handleClick}>
@@ -71,18 +107,12 @@
           <label for="graph-type">Sampler</label>
           <Dropdown id="graph-type" bind:value={datum.graphType}>
             <option value="polyline">polyline</option>
-            <!-- commenting out these two options as they cause issues with functionplot -->
-            <!-- <option value="scatter">scatter</option> -->
-            <!-- {#if !["polar", "vector"].includes(datum.fnType)}
+            <option value="scatter">scatter</option>
+            {#if !["polar", "vector", "points"].includes(datum.fnType)}
               <option value="interval">interval</option>
             {/if} -->
           </Dropdown>
         {/if}
-        <!-- commenting out closed graphs for similar reasons -->
-        <!-- {#if datum.graphType && ["polyline", "interval"].includes(datum.graphType) && datum.fnType !== "vector"}
-          <label for="graph-closed">Closed</label>
-          <Switch id="graph-closed" bind:checked={datum.closed} />
-        {/if} -->
         {#if datum.fnType !== "vector"}
           <label for="range">Range</label>
           <div class="functionplot-nums-inputs" id="range">
@@ -95,8 +125,12 @@
               bind:value={datum.range.max}
             />
           </div>
+          {#if datum.graphType && ["polyline", "interval"].includes(datum.graphType)}
+            <label for="closed">Closed</label>
+            <Switch id="closed" bind:checked={datum.closed} />
+          {/if}
         {/if}
-        {#if datum.graphType && ["scatter", "polyline"].includes(datum.graphType) && datum.fnType !== "vector"}
+        {#if datum.graphType && datum.fnType !== "vector"}
           <label for="n-samples">Samples</label>
           <NumberInput id="n-samples" min={0} bind:value={datum.nSamples} />
         {/if}
@@ -108,7 +142,12 @@
     {/if}
   </div>
 
-  <IconWrapper on:click={unmount}>
+  <input type="color" bind:value={datum.color} />
+
+  <IconWrapper
+    style="align-self: center; transform: translateY(0.2em);"
+    on:click={unmount}
+  >
     <Delete size="1.1em" />
   </IconWrapper>
 </div>
@@ -134,7 +173,9 @@
     grid-template-columns: min-content auto repeat(3, min-content);
   }
 
-  .functionplot-item-data:has(input[placeholder="Name"]):has(input[placeholder="Δx"]) {
+  .functionplot-item-data:has(input[placeholder="Name"]):has(
+      input[placeholder="Δx"]
+    ) {
     grid-template-columns: min-content max-content auto repeat(4, min-content);
   }
 

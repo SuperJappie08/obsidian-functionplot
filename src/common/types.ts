@@ -24,7 +24,7 @@ export interface FunctionInputs {
   id?: string;
   name?: string;
   scope: { [_: string]: number };
-  fnType: "linear" | "vector" | "polar";
+  fnType: "linear" | "vector" | "polar" | "points";
   fn?: string;
   vector: {
     x?: number;
@@ -40,6 +40,7 @@ export interface FunctionInputs {
     min?: number;
     max?: number;
   };
+  points: number[][];
   graphType: "polyline" | "interval" | "scatter";
   nSamples?: number;
   closed?: boolean;

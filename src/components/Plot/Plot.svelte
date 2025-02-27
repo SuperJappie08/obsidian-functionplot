@@ -5,13 +5,19 @@
   import { Menu } from "obsidian";
 
   import { FunctionPlot } from "../../fnplot";
+  import { onMount } from "svelte";
 
   export let options: PlotInputs,
     plugin: ObsidianFunctionPlot,
     showConstantsSettings = false;
 
-  let plot = new FunctionPlot(plugin);
+  let plotContainer: HTMLElement;
+  let plot: FunctionPlot;
+  let prevGraphType = new Array();
 
+  onMount(() => {
+    createNewPlot();
+  });
   // $: {
   //   const scope = (
   //     Object.entries(options.constants) as [string, ConstantInputs][]
@@ -23,7 +29,38 @@
   //     datum.scope = scope;
   //   });
   // }
-  $: plot.options = options;
+
+  function createNewPlot() {
+    // First destroy any existing plot completely
+    if (plotContainer) {
+      plotContainer.innerHTML = "";
+    }
+
+    // Create fresh plot instance
+    plot = new FunctionPlot(plugin);
+    plot.target = plotContainer;
+
+    // Apply options and render
+    plot.options = options;
+    plot.resetView();
+    plot.render();
+  }
+
+  $: {
+    if (options?.data) {
+      for (let i = 0; i < options.data.length; i++) {
+        if (prevGraphType && prevGraphType[i] !== options.data[i].graphType) {
+          createNewPlot();
+        } else if (plot) {
+          plot.options = options;
+          plot.resetView();
+          plot.render();
+        }
+
+        prevGraphType[i] = options.data[i].graphType;
+      }
+    }
+  }
 
   function handleContextMenu(e: MouseEvent) {
     e.preventDefault();
@@ -54,7 +91,7 @@
 </script>
 
 <div on:contextmenu={handleContextMenu}>
-  <div class="fplt-plot" bind:this={plot.target} />
+  <div class="fplt-plot" bind:this={plotContainer} />
   <div class="fplt-plot-options">
     <div class="fplt-constants">
       {#each Object.keys(options.constants) as name}

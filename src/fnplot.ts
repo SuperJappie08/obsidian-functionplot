@@ -29,7 +29,6 @@ export class FunctionPlot {
 
   render(): void {
     if (!this.target_ || !this.options_) {
-      console.log("No target or options set");
       return;
     }
     try {
@@ -37,10 +36,6 @@ export class FunctionPlot {
         Object.assign(
           this.fnPlotOptions,
           toFunctionPlotOptions(this.options_, this.target_)
-        );
-        console.log(
-          "updated fnPlotOptions: ",
-          JSON.parse(JSON.stringify(this.fnPlotOptions))
         );
       } else {
         this.fnPlotOptions = Object.assign(
@@ -55,18 +50,12 @@ export class FunctionPlot {
             height: 350,
           }
         );
-        console.log(
-          "new fnPlotOptions: ",
-          JSON.parse(JSON.stringify(this.fnPlotOptions))
-        );
       }
       if (this.chart !== undefined) {
         this.chart.removeAllListeners("after:draw");
         this.chart.build();
-        console.log("redrew chart");
       } else {
         this.chart = functionPlot(this.fnPlotOptions);
-        console.log("new chart");
       }
     } catch (err) {
       console.error(`Error rendering plot: ${err}`);

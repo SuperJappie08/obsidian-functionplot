@@ -66,3 +66,52 @@ export default class ObsidianFunctionPlot extends Plugin {
     };
   }
 }
+
+/*
+          const activeLeaf = this.app.workspace.activeLeaf;
+          let selectedText = "";
+
+          if (activeLeaf) {
+               if (activeLeaf && activeLeaf.view instanceof MarkdownView) {
+                    const editor = activeLeaf.view.editor;
+                    selectedText = editor.getSelection();
+
+                    if (selectedText !== "") {
+                         editor.setCursor(
+                              editor.getCursor().line + 1,
+                              editor.getCursor().ch
+                         );
+                    }
+               }
+          }
+*/
+
+/*
+          plot.tip.renderer(
+               (x: number, y: number, index: number) => {
+                    return (
+                         (plot as NameChart).names[index].replace(
+                              "x",
+                              x.toPrecision(2).toString()
+                         ) +
+                         "=" +
+                         y.toPrecision(2).toString()
+                    );
+               }
+          );
+          */
+/*
+          plot.tip.renderer((x: number, y: number, index: number) => {
+               return (
+                    (plot as NameChart).names[index] +
+                    "=" +
+                    (
+                         "(" +
+                         x.toPrecision(2) +
+                         "|" +
+                         y.toPrecision(2).toString() +
+                         ")"
+                    ).replace(".", plugin.settings.decimal_seperator)
+               );
+          });
+          */

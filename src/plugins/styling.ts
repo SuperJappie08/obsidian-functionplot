@@ -40,7 +40,6 @@ export default function createStylingPlugin(plugin: ObsidianFunctionPlot) {
       .style("opacity", 1);
 
     instance.on("after:draw", () => {
-      console.log("draw");
       instance.root
         .selectAll(".tick line")
         .style("stroke", plugin.settings.gridColor)

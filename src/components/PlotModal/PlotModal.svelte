@@ -26,6 +26,7 @@
   import type ObsidianFunctionPlot from "../../main";
   import IconWrapper from "../Primitives/IconWrapper.svelte";
   import Plot from "../Plot/Plot.svelte";
+  import { MarkdownView } from "obsidian";
 
   export let options: PlotInputs,
     plugin: ObsidianFunctionPlot,
@@ -52,6 +53,24 @@
 
   const hues = spacedHues();
 
+  const activeLeaf = this.app.workspace.activeLeaf;
+  let selectedText = "";
+
+  if (activeLeaf) {
+    if (activeLeaf && activeLeaf.view instanceof MarkdownView) {
+      const editor = activeLeaf.view.editor;
+      selectedText = editor.getSelection();
+
+      if (selectedText !== "") {
+        options.data[0].fn = selectedText;
+        editor.setCursor(
+          editor.getCursor().line + 1,
+          editor.getCursor().ch
+        );
+      }
+    }
+  }
+
   // create a new function item
   function newDataItem() {
     options.data = [
@@ -71,6 +90,8 @@
       if (datum.fnType === "linear") {
         toParse.push(datum.fn ?? "");
         ignored.push("x");
+        ignored.push("^");
+        ignored.push("x^");
       } else if (datum.fnType === "polar") {
         toParse.push(datum.r ?? "");
         ignored.push("theta");
