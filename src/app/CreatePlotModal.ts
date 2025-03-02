@@ -8,11 +8,27 @@ import { insertPlot } from "../common/utils";
 export default class CreatePlotModal extends Modal {
   plugin: ObsidianFunctionPlot;
   editor: Editor;
+  options: PlotInputs;
+  onSubmit: (options: PlotInputs, renderer: rendererType) => void;
 
-  constructor(plugin: ObsidianFunctionPlot, editor: Editor) {
+  constructor(
+    plugin: ObsidianFunctionPlot,
+    editor: Editor,
+    options?: PlotInputs,
+    onSubmit?: () => void
+  ) {
     super(plugin.app);
     this.plugin = plugin;
     this.editor = editor;
+    this.options =
+      options ??
+      (JSON.parse(JSON.stringify(DEFAULT_PLOT_INPUTS)) as PlotInputs);
+    this.onSubmit =
+      onSubmit ??
+      ((options: PlotInputs, renderer: rendererType) => {
+        insertPlot(this.plugin, this.editor, options, renderer);
+        this.close();
+      });
   }
 
   onOpen() {
@@ -23,12 +39,9 @@ export default class CreatePlotModal extends Modal {
     new PlotModal({
       target: this.contentEl,
       props: {
-        options: JSON.parse(JSON.stringify(DEFAULT_PLOT_INPUTS)) as PlotInputs,
+        options: this.options,
         plugin: this.plugin,
-        submit: (options: PlotInputs, renderer: rendererType) => {
-          insertPlot(this.plugin, this.editor, options, renderer);
-          this.close();
-        },
+        submit: this.onSubmit,
       },
     });
   }

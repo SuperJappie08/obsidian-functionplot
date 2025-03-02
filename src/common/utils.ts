@@ -17,6 +17,7 @@ import { toPng } from "html-to-image";
 import type {
   FunctionPlotDatum,
   FunctionPlotOptions,
+  FunctionPlotTip,
 } from "function-plot/dist/types";
 import { FunctionPlot } from "../fnplot";
 
@@ -24,10 +25,14 @@ export function gcd(a: number, b: number): number {
   return !b ? a : gcd(b, a % b);
 }
 
-function parseLaTeX(latex: string | undefined): string | undefined {
+function parseLaTeX(
+  latex: string | undefined,
+  plugin: ObsidianFunctionPlot
+): string | undefined {
   return latex === undefined
     ? latex
     : latex
+        .replace(plugin.settings.decimalSeparator, ".")
         .replace("f(x)=", "")
         .replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, "($1)/($2)")
         .replace(/\\cdot/g, "*")
@@ -49,17 +54,19 @@ function parseLaTeX(latex: string | undefined): string | undefined {
 // TODO make change to returned object reflect in input
 export function toFunctionPlotOptions(
   options: PlotInputs,
-  target: HTMLElement
+  target: HTMLElement,
+  plugin: ObsidianFunctionPlot
 ): FunctionPlotOptions {
   function functionInputsToFunctionPlotDatum(
-    inputs: FunctionInputs
+    inputs: FunctionInputs,
+    plugin: ObsidianFunctionPlot
   ): FunctionPlotDatum {
     const output: FunctionPlotDatum = {
       fnType: inputs.fnType,
       graphType: inputs.graphType ?? undefined,
       fn:
         inputs.fnType === "linear"
-          ? parseLaTeX(inputs.fn) ?? undefined
+          ? parseLaTeX(inputs.fn, plugin) ?? undefined
           : undefined,
       points:
         inputs.fnType === "points" && inputs.points !== DEFAULT_POINTS
@@ -98,6 +105,14 @@ export function toFunctionPlotOptions(
       nSamples: inputs.nSamples ? Math.min(inputs.nSamples, 999) : undefined,
       closed: inputs.closed ?? undefined,
       skipTip: inputs.skipTip ?? undefined,
+      derivative:
+        inputs.derivative?.fn === ""
+          ? undefined
+          : {
+              fn: parseLaTeX(inputs.derivative?.fn, plugin),
+              x0: inputs.derivative?.x0 ?? undefined,
+              updateOnMouseMove: inputs.derivative?.updateOnMouseMove ?? true,
+            },
     };
 
     Object.keys(output).forEach(
@@ -123,7 +138,7 @@ export function toFunctionPlotOptions(
     target: target,
     data: options.data
       .filter(hasFunction)
-      .map(functionInputsToFunctionPlotDatum),
+      .map((data) => functionInputsToFunctionPlotDatum(data, plugin)),
     title: options.title ?? undefined,
     xAxis: {
       label: options.xAxis.label ?? FALLBACK_PLOT_INPUTS.xAxis.label,
@@ -141,6 +156,17 @@ export function toFunctionPlotOptions(
     },
     grid: options.grid ?? undefined,
     disableZoom: options.disableZoom ?? undefined,
+    tip: {
+      renderer: (x: number, y: number, index: number) => {
+        return options.tip.renderer === undefined || options.tip.renderer === ""
+          ? "(" + x.toFixed(2).toString() + "," + y.toFixed(2).toString() + ")"
+          : options.tip.renderer
+              .replace("x", x.toFixed(2).toString())
+              .replace("y", y.toFixed(2).toString());
+      },
+      xLine: options.tip.xLine ?? undefined,
+      yLine: options.tip.yLine ?? undefined,
+    } as FunctionPlotTip,
   };
 
   Object.keys(output).forEach(
@@ -291,6 +317,7 @@ export function parseYAMLCodeBlock(content: string): PlotInputs {
         fn, // return as FunctionInputs since fn is specified here
       }) as FunctionInputs;
     }),
+    tip: {},
   };
 }
 

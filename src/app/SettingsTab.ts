@@ -44,6 +44,19 @@ export default class SettingsTab extends PluginSettingTab {
           });
       });
 
+    new Setting(containerEl)
+      .setName("Decimal Separator")
+      .setDesc("The character used as the decimal separator.")
+      .addText((text) => {
+        this.settingsInputs.set("decimalSeparator", text);
+        text
+          .setValue(this.plugin.settings.decimalSeparator)
+          .onChange(async (value) => {
+            this.plugin.settings.decimalSeparator = value;
+            await this.plugin.saveSettings();
+          });
+      });
+
     /*
      * Font Sizes
      */

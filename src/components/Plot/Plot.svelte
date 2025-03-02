@@ -2,10 +2,14 @@
   import type { PlotInputs } from "../../common/types";
   import type ObsidianFunctionPlot from "../../main";
   import Constant from "./Constant.svelte";
-  import { Menu } from "obsidian";
+  import { MarkdownView, Menu } from "obsidian";
 
   import { FunctionPlot } from "../../fnplot";
   import { onMount } from "svelte";
+  import PlotModal from "../PlotModal/PlotModal.svelte";
+  import CreatePlotModal from "../../app/CreatePlotModal";
+  import { timeHours } from "d3";
+  import { insertPlot } from "../../common/utils";
 
   export let options: PlotInputs,
     plugin: ObsidianFunctionPlot,
@@ -81,7 +85,22 @@
         item.setTitle("Edit");
         item.setIcon("pencil");
         item.onClick(() => {
-          console.log("to be implemented");
+          const activeLeaf =
+            plugin.app.workspace.getActiveViewOfType(MarkdownView);
+
+          if (!activeLeaf) {
+            return;
+          }
+
+          new CreatePlotModal(
+            plugin,
+            activeLeaf.editor,
+            options,
+            (options: PlotInputs, renderer: rendererType) => {
+              insertPlot(this.plugin, this.editor, options, renderer);
+              this.close();
+            }
+          ).open();
         });
       });
     }
@@ -90,7 +109,7 @@
   }
 </script>
 
-<div on:contextmenu={handleContextMenu}>
+<div on:contextmenu={handleContextMenu} role="application">
   <div class="fplt-plot" bind:this={plotContainer} />
   <div class="fplt-plot-options">
     <div class="fplt-constants">

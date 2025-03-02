@@ -14,11 +14,10 @@
 
   export let datum: FunctionInputs, unmount: () => void, legends: boolean;
 
-  let showFloater = false;
-  let mousePos = { x: 0, y: 0 };
-
   let points = 1;
 
+  let mousePos = { x: 0, y: 0 };
+  let showFloater = false;
   function handleClick(e: MouseEvent) {
     showFloater = true;
     const target = (e.target as HTMLElement).closest("div");
@@ -110,7 +109,7 @@
             <option value="scatter">scatter</option>
             {#if !["polar", "vector", "points"].includes(datum.fnType)}
               <option value="interval">interval</option>
-            {/if} -->
+            {/if}
           </Dropdown>
         {/if}
         {#if datum.fnType !== "vector"}
@@ -137,6 +136,10 @@
         {#if datum.fnType !== "vector"}
           <label for="skip-tip">Skip tip</label>
           <Switch id="skip-tip" bind:checked={datum.skipTip} />
+        {/if}
+        {#if datum.fnType == "linear"}
+          <label for="derivative">Derivative</label>
+          <TextInput id="derivative" bind:value={datum.derivative.fn} />
         {/if}
       </OptionsFloater>
     {/if}

@@ -35,12 +35,12 @@ export class FunctionPlot {
       if (this.fnPlotOptions !== undefined) {
         Object.assign(
           this.fnPlotOptions,
-          toFunctionPlotOptions(this.options_, this.target_)
+          toFunctionPlotOptions(this.options_, this.target_, this.plugin)
         );
       } else {
         this.fnPlotOptions = Object.assign(
           {},
-          toFunctionPlotOptions(this.options_, this.target_),
+          toFunctionPlotOptions(this.options_, this.target_, this.plugin),
           {
             plugins: [
               createStylingPlugin(this.plugin),

@@ -67,6 +67,7 @@ export default class ObsidianFunctionPlot extends Plugin {
   }
 }
 
+
 /*
           const activeLeaf = this.app.workspace.activeLeaf;
           let selectedText = "";

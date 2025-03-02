@@ -27,6 +27,7 @@
   import IconWrapper from "../Primitives/IconWrapper.svelte";
   import Plot from "../Plot/Plot.svelte";
   import { MarkdownView } from "obsidian";
+  import MenuDown from "svelte-material-icons/MenuDown.svelte";
 
   export let options: PlotInputs,
     plugin: ObsidianFunctionPlot,
@@ -53,22 +54,34 @@
 
   const hues = spacedHues();
 
-  const activeLeaf = this.app.workspace.activeLeaf;
-  let selectedText = "";
+  import { onMount } from "svelte";
+  import OptionsFloater from "../Primitives/OptionsFloater.svelte";
 
-  if (activeLeaf) {
-    if (activeLeaf && activeLeaf.view instanceof MarkdownView) {
-      const editor = activeLeaf.view.editor;
-      selectedText = editor.getSelection();
+  onMount(async () => {
+    const activeLeaf = plugin.app.workspace.getActiveViewOfType(MarkdownView);
+    let selectedText = "";
 
-      if (selectedText !== "") {
-        options.data[0].fn = selectedText;
-        editor.setCursor(
-          editor.getCursor().line + 1,
-          editor.getCursor().ch
-        );
-      }
+    if (!activeLeaf) {
+      return;
     }
+    const editor = activeLeaf.editor;
+    selectedText = editor.getSelection();
+
+    if (selectedText !== "") {
+      newDataItem();
+      options.data[0].fn = selectedText;
+      editor.setCursor(editor.getCursor().line + 1, editor.getCursor().ch);
+    }
+  });
+
+  let mousePos = { x: 0, y: 0 };
+  let showFloater = false;
+  function handleClick(e: MouseEvent) {
+    showFloater = true;
+    const target = (e.target as HTMLElement).closest("div");
+    if (!target) return;
+    const rect = target.getBoundingClientRect();
+    mousePos = { x: rect.right, y: rect.bottom };
   }
 
   // create a new function item
@@ -162,6 +175,26 @@
               placeholder="Ymax"
               bind:value={options.yAxis.domain.max}
             />
+          </SettingItem>
+          <SettingItem name="Tip Renderer">
+            <TextInput bind:value={options.tip.renderer} />
+            <div>
+              <IconWrapper on:click={handleClick}>
+                <MenuDown size="1.4em" />
+              </IconWrapper>
+              {#if showFloater}
+                <OptionsFloater bind:show={showFloater} {mousePos}>
+                  <label for="y-axis">Y axis</label>
+                  <div id="y-axis" class="functionplot-nums-bool">
+                    <Switch bind:checked={options.tip.yLine} />
+                  </div>
+                  <label for="x-axis">X axis</label>
+                  <div id="x-axis" class="functionplot-nums-bool">
+                    <Switch bind:checked={options.tip.xLine} />
+                  </div>
+                </OptionsFloater>
+              {/if}
+            </div>
           </SettingItem>
           <SettingItem name="Disable Zoom">
             <Switch bind:checked={options.disableZoom} />

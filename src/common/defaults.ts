@@ -11,6 +11,8 @@ import type {
  * The default plugin settings.
  */
 export const DEFAULT_PLUGIN_SETTINGS: Required<PluginSettings> = {
+  decimalSeparator: ".",
+
   titleFontSize: 24,
   scaleFontSize: 12,
   labelFontSize: 12,
@@ -59,6 +61,10 @@ export const DEFAULT_FUNCTION_INPUTS: Omit<FunctionInputs, "fn" | "r"> = {
   graphType: "polyline",
   nSamples: undefined,
   points: DEFAULT_POINTS,
+  derivative: {
+    fn: "",
+    updateOnMouseMove: true,
+  },
 };
 
 export const FALLBACK_FUNCTION_INPUTS: DeepNonNullable<
@@ -88,23 +94,15 @@ export const DEFAULT_PLOT_INPUTS: PlotInputs = {
   constants: {},
   legends: false,
   xAxis: {
-    label: undefined,
-    domain: {
-      min: undefined,
-      max: undefined,
-    },
+    domain: {},
   },
   yAxis: {
-    label: undefined,
-    domain: {
-      min: undefined,
-      max: undefined,
-    },
+    domain: {},
   },
   grid: true,
   data: [],
-  disableZoom: undefined,
   title: undefined,
+  tip: {},
 };
 
 export const FALLBACK_PLOT_INPUTS: DeepNonNullable<

@@ -20,6 +20,12 @@ export type DeepNonNullable<T> = {
   [K in keyof T]: DeepNonNullable<Required<T[K]>>;
 };
 
+export interface DerivativeInputs {
+  fn: string;
+  x0?: number;
+  updateOnMouseMove: boolean;
+}
+
 export interface FunctionInputs {
   id?: string;
   name?: string;
@@ -45,13 +51,22 @@ export interface FunctionInputs {
   nSamples?: number;
   closed?: boolean;
   skipTip?: boolean;
+  derivative: DerivativeInputs;
 }
+
 export interface ConstantInputs {
   min: number;
   max: number;
   step: number;
   value: number;
 }
+
+export interface TipInputs {
+  renderer?: string;
+  xLine?: boolean;
+  yLine?: boolean;
+}
+
 /**
  * An interface specifying the options for a plot.
  */
@@ -76,6 +91,7 @@ export interface PlotInputs {
   grid?: boolean;
   disableZoom?: boolean;
   title?: string;
+  tip: TipInputs;
 }
 
 export interface V1YAMLPlotInputs {
@@ -91,6 +107,8 @@ export interface V1YAMLPlotInputs {
  * The plugin's settings.
  */
 export interface PluginSettings {
+  decimalSeparator: string;
+
   titleFontSize: number;
   scaleFontSize: number;
   labelFontSize: number;

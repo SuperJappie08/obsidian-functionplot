@@ -6,7 +6,6 @@ import type { PlotInputs, chartType } from "../common/types";
 // TODO dont show legends for functions with empty name
 export default function createLegendsPlugin(options: PlotInputs) {
   return function legendsPlugin(instance: chartType) {
-    console.log("applying legends plugin");
     if (!options.legends) return;
     instance.root.append("text").attr("class", "top-left-legend");
     const legends: { name: string; color: string }[] = [];
@@ -17,7 +16,6 @@ export default function createLegendsPlugin(options: PlotInputs) {
       });
     });
     const tll = instance.root.select(".top-left-legend");
-    console.log(legends);
     tll.selectAll("tspan").remove();
     legends.forEach((legend) => {
       tll
