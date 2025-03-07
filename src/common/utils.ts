@@ -33,7 +33,7 @@ function parseLaTeX(
     ? latex
     : latex
         .replace(plugin.settings.decimalSeparator, ".")
-        .replace("f(x)=", "")
+        .replace(/\w+\(x\)=/, "") // Replace any function name(x)= pattern
         .replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, "($1)/($2)")
         .replace(/\\cdot/g, "*")
         .replace(/\^{([^}]*)}/g, "^($1)")
@@ -93,7 +93,10 @@ export function toFunctionPlotOptions(
               inputs.offset.y ?? FALLBACK_FUNCTION_INPUTS.offset.y,
             ]
           : undefined,
-      r: inputs.fnType === "polar" ? inputs.r ?? undefined : undefined,
+      r:
+        inputs.fnType === "polar"
+          ? parseLaTeX(inputs.r, plugin) ?? undefined
+          : undefined,
       color: inputs.color ?? undefined,
       range:
         inputs.range.min || inputs.range.max

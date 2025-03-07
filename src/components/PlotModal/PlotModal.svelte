@@ -58,6 +58,7 @@
   import OptionsFloater from "../Primitives/OptionsFloater.svelte";
 
   onMount(async () => {
+    // Get the currently selected text and set it as the first function
     const activeLeaf = plugin.app.workspace.getActiveViewOfType(MarkdownView);
     let selectedText = "";
 

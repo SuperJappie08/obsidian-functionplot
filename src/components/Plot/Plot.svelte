@@ -92,15 +92,7 @@
             return;
           }
 
-          new CreatePlotModal(
-            plugin,
-            activeLeaf.editor,
-            options,
-            (options: PlotInputs, renderer: rendererType) => {
-              insertPlot(this.plugin, this.editor, options, renderer);
-              this.close();
-            }
-          ).open();
+          new CreatePlotModal(plugin, activeLeaf.editor, options).open();
         });
       });
     }
@@ -130,6 +122,7 @@
     grid-template-columns: 1fr min-content;
     gap: 1em;
   }
+
   .fplt-constants {
     display: flex;
     margin-left: 2em;
