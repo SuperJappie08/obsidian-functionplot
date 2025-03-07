@@ -79,8 +79,8 @@
         </div>
       {/each}
       <div class="fplt-fns-add">
-        <Button style="width: 100%;" on:click={handlePointsChange}>
-          <IconWrapper style="padding: 0.1em; width: 100%;">
+        <Button on:click={handlePointsChange}>
+          <IconWrapper style="margin-right: 0.5em">
             <Plus />
           </IconWrapper>
           Add Point
