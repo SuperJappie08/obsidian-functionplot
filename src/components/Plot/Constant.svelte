@@ -25,7 +25,6 @@
     if (!target) return;
     const rect = target.getBoundingClientRect();
     mousePos = { x: rect.right, y: rect.bottom };
-    console.log(mousePos);
   }
 </script>
 

@@ -33,7 +33,7 @@ function parseLaTeX(
     ? latex
     : latex
         .replace(plugin.settings.decimalSeparator, ".")
-        .replace(/\w+\(x\)=/, "") // Replace any function name(x)= pattern
+        .replace(/\w+\(x\) *=/, "") // Replace any function name(x)= pattern
         .replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, "($1)/($2)")
         .replace(/\\cdot/g, "*")
         .replace(/\^{([^}]*)}/g, "^($1)")
@@ -160,7 +160,7 @@ export function toFunctionPlotOptions(
     grid: options.grid ?? undefined,
     disableZoom: options.disableZoom ?? undefined,
     tip: {
-      renderer: (x: number, y: number, index: number) => {
+      renderer: (x: number, y: number) => {
         return options.tip.renderer === undefined || options.tip.renderer === ""
           ? "(" + x.toFixed(2).toString() + "," + y.toFixed(2).toString() + ")"
           : options.tip.renderer

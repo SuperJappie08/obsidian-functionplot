@@ -9,6 +9,7 @@ export default class CreatePlotModal extends Modal {
   plugin: ObsidianFunctionPlot;
   editor: Editor;
   options: PlotInputs;
+  // eslint-disable-next-line no-unused-vars
   onSubmit: (options: PlotInputs, renderer: rendererType) => void;
 
   constructor(

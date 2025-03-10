@@ -57,7 +57,18 @@
   import { onMount } from "svelte";
   import OptionsFloater from "../Primitives/OptionsFloater.svelte";
 
-  onMount(async () => {
+  // create a new function item
+  function newDataItem() {
+    options.data = [
+      ...options.data,
+      Object.assign(JSON.parse(JSON.stringify(DEFAULT_FUNCTION_INPUTS)), {
+        id: Math.random().toString(36).substring(2, 9),
+        color: hueToHexRGB(hues.next().value as number),
+      }) as FunctionInputs,
+    ];
+  }
+
+  onMount(() => {
     // Get the currently selected text and set it as the first function
     const activeLeaf = plugin.app.workspace.getActiveViewOfType(MarkdownView);
     let selectedText = "";
@@ -85,17 +96,6 @@
     mousePos = { x: rect.right, y: rect.bottom };
   }
 
-  // create a new function item
-  function newDataItem() {
-    options.data = [
-      ...options.data,
-      Object.assign(JSON.parse(JSON.stringify(DEFAULT_FUNCTION_INPUTS)), {
-        id: Math.random().toString(36).substring(2, 9),
-        color: hueToHexRGB(hues.next().value as number),
-      }) as FunctionInputs,
-    ];
-  }
-
   $: {
     const constants = options.data.reduce((acc: string[], datum) => {
       const toParse: string[] = [],
@@ -109,6 +109,8 @@
       } else if (datum.fnType === "polar") {
         toParse.push(datum.r ?? "");
         ignored.push("theta");
+        ignored.push("^");
+        ignored.push("theta^");
       } // vector doesn't support constants currently
 
       toParse.forEach((fn: string) => {

@@ -6,10 +6,7 @@
 
   import { FunctionPlot } from "../../fnplot";
   import { onMount } from "svelte";
-  import PlotModal from "../PlotModal/PlotModal.svelte";
   import CreatePlotModal from "../../app/CreatePlotModal";
-  import { timeHours } from "d3";
-  import { insertPlot } from "../../common/utils";
 
   export let options: PlotInputs,
     plugin: ObsidianFunctionPlot,
@@ -17,22 +14,7 @@
 
   let plotContainer: HTMLElement;
   let plot: FunctionPlot;
-  let prevGraphType = new Array();
-
-  onMount(() => {
-    createNewPlot();
-  });
-  // $: {
-  //   const scope = (
-  //     Object.entries(options.constants) as [string, ConstantInputs][]
-  //   ).reduce((scope_, [key, val]) => {
-  //     scope_[key] = val.value;
-  //     return scope_;
-  //   }, {});
-  //   options.data.forEach((datum) => {
-  //     datum.scope = scope;
-  //   });
-  // }
+  let prevGraphType = [];
 
   function createNewPlot() {
     // First destroy any existing plot completely
@@ -49,6 +31,21 @@
     plot.resetView();
     plot.render();
   }
+
+  onMount(() => {
+    createNewPlot();
+  });
+  // $: {
+  //   const scope = (
+  //     Object.entries(options.constants) as [string, ConstantInputs][]
+  //   ).reduce((scope_, [key, val]) => {
+  //     scope_[key] = val.value;
+  //     return scope_;
+  //   }, {});
+  //   options.data.forEach((datum) => {
+  //     datum.scope = scope;
+  //   });
+  // }
 
   $: {
     if (options?.data) {

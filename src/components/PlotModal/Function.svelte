@@ -26,7 +26,7 @@
     mousePos = { x: rect.right, y: rect.bottom };
   }
 
-  function handlePointsChange(e: MouseEvent) {
+  function handlePointsChange() {
     points += 1;
     datum.points.push([0, 0]);
   }
@@ -34,6 +34,17 @@
   function removePoint(i: number) {
     points -= 1;
     datum.points.remove(datum.points[i]);
+  }
+
+  $: {
+    if (datum.fnType === "linear" || datum.fnType === "polar") {
+      let fnString = datum.fnType === "linear" ? datum.fn : datum.r;
+      let match = fnString?.match(/\w+\(x\) *=/);
+
+      if (match) {
+        datum.name = match[0].replaceAll("=", "").replaceAll("(x)", "").trim();
+      }
+    }
   }
 </script>
 
@@ -72,7 +83,7 @@
 
           <IconWrapper
             style="align-self: center; transform: translateY(0.2em);"
-            on:click={(e) => removePoint(i)}
+            on:click={() => removePoint(i)}
           >
             <Delete size="1.1em" />
           </IconWrapper>
@@ -137,7 +148,7 @@
           <label for="skip-tip">Skip tip</label>
           <Switch id="skip-tip" bind:checked={datum.skipTip} />
         {/if}
-        {#if datum.fnType == "linear"}
+        {#if datum.fnType === "linear"}
           <label for="derivative">Derivative</label>
           <TextInput id="derivative" bind:value={datum.derivative.fn} />
         {/if}
