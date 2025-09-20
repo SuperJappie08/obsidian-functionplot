@@ -9,12 +9,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      BUILD_LINK: https://github.com/leonhma/obsidian-functionplot/actions/runs/${{ github.run_id }}
+      BUILD_LINK: https://github.com/SuperJappie08/obsidian-functionplot/actions/runs/${{ github.run_id }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v5
         with:
           node-version: 18
 
@@ -30,7 +30,7 @@ jobs:
         run: pnpm run build:prod
 
       - name: upload dist
-        uses: actions/upload-artifact@v3.1.0
+        uses: actions/upload-artifact@v4
         with:
           name: obsidian-functionplot
           path: |
@@ -41,9 +41,9 @@ jobs:
     runs-on: ubuntu-latest
     name: test
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v5
         with:
           node-version: 18
 
@@ -59,9 +59,9 @@ jobs:
     runs-on: ubuntu-latest
     name: lint
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v5
         with:
           node-version: 18
 

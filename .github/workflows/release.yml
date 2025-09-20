@@ -15,12 +15,12 @@ jobs:
 
     steps:
       - name: Setup Node.js environment
-        uses: actions/setup-node@v3.1.1
+        uses: actions/setup-node@v5
         with:
           node-version: 18
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Install
         run: |
@@ -60,15 +60,15 @@ jobs:
           git push origin master
 
       - name: Upload assets to a Release
-        uses: AButler/upload-release-assets@v2.0
+        uses: AButler/upload-release-assets@v3
         with:
           repo-token: ${{ github.token }}
           files: "main.js;manifest.json;obsidian-functionplot.zip"
 
-      - uses: actions/github-script@v4
+      - uses: actions/github-script@v8
         if: failure()
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const { owner, repo } = context.repo
-            await github.repos.deleteRelease({ owner, repo, release_id: context.payload.release.id })
+            await github.rest.repos.deleteRelease({ owner, repo, release_id: context.payload.release.id })
