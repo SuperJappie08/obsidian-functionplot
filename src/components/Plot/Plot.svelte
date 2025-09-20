@@ -14,7 +14,7 @@
 
   let plotContainer: HTMLElement;
   let plot: FunctionPlot;
-  let prevGraphType = [];
+  let prevGraphType: ("interval"|"polyline"|"scatter")[] = [];
 
   function createNewPlot() {
     // First destroy any existing plot completely

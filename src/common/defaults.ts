@@ -103,4 +103,4 @@ export const DEFAULT_PLOT_INPUTS: PlotInputs = {
 export const FALLBACK_PLOT_DOMAIN_INPUTS: DeepNonNullable<PlotDomainInputs> = {
   min: -10,
   max: 10,
-}
+};

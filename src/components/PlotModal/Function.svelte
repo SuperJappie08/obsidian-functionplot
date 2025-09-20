@@ -46,6 +46,14 @@
       }
     }
   }
+
+  // Insert optional fields, otherwise it cannot bind to nested values
+  if (typeof datum.range === "undefined") {
+    datum.range = {};
+  }
+  if (typeof datum.derivative === "undefined") {
+    datum.derivative = {fn: "", updateOnMouseMove: true};
+  }
 </script>
 
 <div class="functionplot-item-data">

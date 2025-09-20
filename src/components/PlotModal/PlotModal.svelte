@@ -145,6 +145,21 @@
       }
     }
   }
+
+    // Insert optional fields, otherwise it cannot bind to nested values
+  if (typeof options.xAxis === 'undefined') {
+    options.xAxis = {};
+  }
+  if (typeof options.xAxis.domain === 'undefined') {
+    options.xAxis.domain = {};
+  }
+
+  if (typeof options.yAxis === 'undefined') {
+    options.yAxis = {};
+  }
+  if (typeof options.yAxis.domain === 'undefined') {
+    options.yAxis.domain = {};
+  }
 </script>
 
 <div class="fplt-create-modal">

@@ -1,4 +1,4 @@
-import { Editor, parseYaml } from "obsidian";
+import { Editor, parseYaml, stringifyYaml } from "obsidian";
 import type ObsidianFunctionPlot from "../main";
 import type {
   FunctionInputs,
@@ -17,7 +17,6 @@ import { toPng } from "html-to-image";
 import type {
   FunctionPlotDatum,
   FunctionPlotOptions,
-  FunctionPlotOptionsAxis,
   FunctionPlotTip,
 } from "function-plot/dist/types";
 import { FunctionPlot } from "../fnplot";
@@ -100,17 +99,18 @@ export function toFunctionPlotOptions(
           : undefined,
       color: inputs.color ?? undefined,
       range:
-        inputs.range.min || inputs.range.max
+        inputs.range?.min || inputs.range?.max
           ? [
-              inputs.range.min ?? FALLBACK_FUNCTION_INPUTS.range.min,
-              inputs.range.max ?? FALLBACK_FUNCTION_INPUTS.range.max,
+              inputs.range?.min ?? FALLBACK_FUNCTION_INPUTS.range!.min,
+              inputs.range?.max ?? FALLBACK_FUNCTION_INPUTS.range!.max,
             ]
           : undefined,
       nSamples: inputs.nSamples ? Math.min(inputs.nSamples, 999) : undefined,
       closed: inputs.closed ?? undefined,
       skipTip: inputs.skipTip ?? undefined,
       derivative:
-        inputs.derivative?.fn === ""
+        inputs.derivative?.fn === "" ||
+        typeof inputs.derivative?.fn === "undefined"
           ? undefined
           : {
               fn: parseLaTeX(inputs.derivative?.fn, plugin),
@@ -144,22 +144,26 @@ export function toFunctionPlotOptions(
       .filter(hasFunction)
       .map((data) => functionInputsToFunctionPlotDatum(data, plugin)),
     title: options.title,
-    xAxis: options.xAxis ? {
-      label: options.xAxis.label,
-      type: options.xAxis.type,
-      domain: options.xAxis.domain ? [
-        options.xAxis.domain.min ?? FALLBACK_PLOT_DOMAIN_INPUTS.min,
-        options.xAxis.domain.max ?? FALLBACK_PLOT_DOMAIN_INPUTS.max,
-      ] : undefined,
-    } as FunctionPlotOptionsAxis : undefined,
-    yAxis: options.yAxis ? {
-      label: options.yAxis.label,
-      type: options.yAxis.type,
-      domain: options.yAxis.domain ? [
-        options.yAxis.domain.min ?? FALLBACK_PLOT_DOMAIN_INPUTS.min,
-        options.yAxis.domain.max ?? FALLBACK_PLOT_DOMAIN_INPUTS.max,
-      ]: undefined,
-    } as FunctionPlotOptionsAxis: undefined,
+    xAxis: {
+      label: options.xAxis?.label ?? undefined,
+      type: options.xAxis?.type ?? undefined,
+      domain: [
+        (options.xAxis ?? { domain: FALLBACK_PLOT_DOMAIN_INPUTS }).domain
+          ?.min ?? (FALLBACK_PLOT_DOMAIN_INPUTS.min as number),
+        (options.xAxis ?? { domain: FALLBACK_PLOT_DOMAIN_INPUTS }).domain
+          ?.max ?? (FALLBACK_PLOT_DOMAIN_INPUTS.max as number),
+      ],
+    },
+    yAxis: {
+      label: options.yAxis?.label ?? undefined,
+      type: options.yAxis?.type ?? undefined,
+      domain: [
+        (options.yAxis ?? { domain: FALLBACK_PLOT_DOMAIN_INPUTS }).domain
+          ?.min ?? (FALLBACK_PLOT_DOMAIN_INPUTS.min as number),
+        (options.yAxis ?? { domain: FALLBACK_PLOT_DOMAIN_INPUTS }).domain
+          ?.max ?? (FALLBACK_PLOT_DOMAIN_INPUTS.max as number),
+      ],
+    },
     grid: options.grid ?? undefined,
     disableZoom: options.disableZoom ?? undefined,
     tip: {
@@ -225,10 +229,11 @@ export function insertPlotAsInteractive(
   editor: Editor,
   options: PlotInputs
 ): void {
-  const text = `\`\`\`functionplot\n${JSON.stringify(
-    Object.assign({}, options, { target: null }),
-    null,
-    2
+  const text = `\`\`\`functionplot\n${stringifyYaml(
+    // JSON.stringify(
+    Object.assign({}, options, { target: null })
+    // null,
+    // 2
   )}\n\`\`\``;
   insertParagraphAtCursor(plugin, editor, text);
 }
@@ -280,6 +285,15 @@ export function insertPlot(
   }
 }
 
+export function parseYAMLCodeBlockV2(content: string): PlotInputs {
+  return Object.assign(
+    {},
+    DEFAULT_PLOT_INPUTS,
+    // TODO: Make indent configurable?
+    parseYaml(content.replaceAll("\t", " ".repeat(4)))
+  ) as PlotInputs;
+}
+
 export function parseYAMLCodeBlock(content: string): PlotInputs {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let header: V1YAMLPlotInputs = {},
@@ -328,6 +342,11 @@ export function parseYAMLCodeBlock(content: string): PlotInputs {
 }
 
 export function parseCodeBlock(content: string): PlotInputs {
+  try {
+    return parseYAMLCodeBlockV2(content);
+  } catch (err) {
+    console.error(`Errow hile parsing code block in YAML V2 mode: ${err}`);
+  }
   try {
     return Object.assign(
       {},

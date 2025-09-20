@@ -24,7 +24,14 @@
   "settings": {
     "svelte3/typescript": true
   },
-  "ignorePatterns": ["node_modules/*", "public/*", "build/*"],
+  "ignorePatterns": [
+    "node_modules/*",
+    "public/*",
+    "build/*",
+    ".pnpm-store/*",
+    "pnpm-lock.yaml",
+    ".devcontainer/*"
+  ],
   "rules": {
     "no-unused-vars": "error",
     "@typescript-eslint/no-unused-vars": "off",

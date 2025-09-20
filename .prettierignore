@@ -8,3 +8,6 @@ coverage
 
 LICENSE
 .deepsource.toml
+.devcontainer/
+pnpm-lock.yaml
+.pnpm-store/

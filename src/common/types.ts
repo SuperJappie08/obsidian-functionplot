@@ -42,7 +42,7 @@ export interface FunctionInputs {
     y?: number;
   };
   color?: string;
-  range: {
+  range?: {
     min?: number;
     max?: number;
   };
@@ -51,7 +51,7 @@ export interface FunctionInputs {
   nSamples?: number;
   closed?: boolean;
   skipTip?: boolean;
-  derivative: DerivativeInputs;
+  derivative?: DerivativeInputs;
 }
 
 export interface ConstantInputs {
