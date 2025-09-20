@@ -11,12 +11,13 @@ import {
   DEFAULT_PLOT_INPUTS,
   DEFAULT_POINTS,
   FALLBACK_FUNCTION_INPUTS,
-  FALLBACK_PLOT_INPUTS,
+  FALLBACK_PLOT_DOMAIN_INPUTS,
 } from "./defaults";
 import { toPng } from "html-to-image";
 import type {
   FunctionPlotDatum,
   FunctionPlotOptions,
+  FunctionPlotOptionsAxis,
   FunctionPlotTip,
 } from "function-plot/dist/types";
 import { FunctionPlot } from "../fnplot";
@@ -142,21 +143,23 @@ export function toFunctionPlotOptions(
     data: options.data
       .filter(hasFunction)
       .map((data) => functionInputsToFunctionPlotDatum(data, plugin)),
-    title: options.title ?? undefined,
-    xAxis: {
-      label: options.xAxis.label ?? FALLBACK_PLOT_INPUTS.xAxis.label,
-      domain: [
-        options.xAxis.domain.min ?? FALLBACK_PLOT_INPUTS.xAxis.domain.min,
-        options.xAxis.domain.max ?? FALLBACK_PLOT_INPUTS.xAxis.domain.max,
-      ],
-    },
-    yAxis: {
-      label: options.yAxis.label ?? FALLBACK_PLOT_INPUTS.yAxis.label,
-      domain: [
-        options.yAxis.domain.min ?? FALLBACK_PLOT_INPUTS.yAxis.domain.min,
-        options.yAxis.domain.max ?? FALLBACK_PLOT_INPUTS.yAxis.domain.max,
-      ],
-    },
+    title: options.title,
+    xAxis: options.xAxis ? {
+      label: options.xAxis.label,
+      type: options.xAxis.type,
+      domain: options.xAxis.domain ? [
+        options.xAxis.domain.min ?? FALLBACK_PLOT_DOMAIN_INPUTS.min,
+        options.xAxis.domain.max ?? FALLBACK_PLOT_DOMAIN_INPUTS.max,
+      ] : undefined,
+    } as FunctionPlotOptionsAxis : undefined,
+    yAxis: options.yAxis ? {
+      label: options.yAxis.label,
+      type: options.yAxis.type,
+      domain: options.yAxis.domain ? [
+        options.yAxis.domain.min ?? FALLBACK_PLOT_DOMAIN_INPUTS.min,
+        options.yAxis.domain.max ?? FALLBACK_PLOT_DOMAIN_INPUTS.max,
+      ]: undefined,
+    } as FunctionPlotOptionsAxis: undefined,
     grid: options.grid ?? undefined,
     disableZoom: options.disableZoom ?? undefined,
     tip: {
@@ -298,16 +301,16 @@ export function parseYAMLCodeBlock(content: string): PlotInputs {
     title: header.title ?? DEFAULT_PLOT_INPUTS.title,
     legends: false,
     xAxis: {
-      label: header.xLabel ?? FALLBACK_PLOT_INPUTS.xAxis.label,
+      label: header.xLabel,
       domain: header.bounds
         ? { min: header.bounds[0], max: header.bounds[1] }
-        : FALLBACK_PLOT_INPUTS.xAxis.domain,
+        : FALLBACK_PLOT_DOMAIN_INPUTS,
     },
     yAxis: {
-      label: header.yLabel ?? FALLBACK_PLOT_INPUTS.yAxis.label,
+      label: header.yLabel,
       domain: header.bounds
         ? { min: header.bounds[2], max: header.bounds[3] }
-        : FALLBACK_PLOT_INPUTS.yAxis.domain,
+        : FALLBACK_PLOT_DOMAIN_INPUTS,
     },
     disableZoom: header.disableZoom ?? DEFAULT_PLOT_INPUTS.disableZoom,
     grid: header.grid ?? DEFAULT_PLOT_INPUTS.grid,

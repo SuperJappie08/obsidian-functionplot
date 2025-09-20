@@ -2,6 +2,7 @@ import type {
   ConstantInputs,
   DeepNonNullable,
   FunctionInputs,
+  PlotDomainInputs,
   PlotInputs,
   PluginSettings,
   rendererType,
@@ -93,33 +94,13 @@ export const DEFAULT_CONSTANT_INPUTS: ConstantInputs = {
 export const DEFAULT_PLOT_INPUTS: PlotInputs = {
   constants: {},
   legends: false,
-  xAxis: {
-    domain: {},
-  },
-  yAxis: {
-    domain: {},
-  },
   grid: true,
   data: [],
   title: undefined,
   tip: {},
 };
 
-export const FALLBACK_PLOT_INPUTS: DeepNonNullable<
-  Pick<PlotInputs, "xAxis" | "yAxis">
-> = {
-  xAxis: {
-    label: "", // not needed
-    domain: {
-      min: -10,
-      max: 10,
-    },
-  },
-  yAxis: {
-    label: "", // not needed
-    domain: {
-      min: -10,
-      max: 10,
-    },
-  },
-};
+export const FALLBACK_PLOT_DOMAIN_INPUTS: DeepNonNullable<PlotDomainInputs> = {
+  min: -10,
+  max: 10,
+}

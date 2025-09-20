@@ -67,6 +67,17 @@ export interface TipInputs {
   yLine?: boolean;
 }
 
+export interface PlotDomainInputs {
+  min?: number;
+  max?: number;
+}
+
+export interface PlotAxisInputs {
+  label?: string;
+  type?: "linear" | "log";
+  domain?: PlotDomainInputs;
+}
+
 /**
  * An interface specifying the options for a plot.
  */
@@ -74,20 +85,8 @@ export interface PlotInputs {
   data: FunctionInputs[];
   constants: { [_: string]: ConstantInputs };
   legends: boolean;
-  xAxis: {
-    label?: string;
-    domain: {
-      min?: number;
-      max?: number;
-    };
-  };
-  yAxis: {
-    label?: string;
-    domain: {
-      min?: number;
-      max?: number;
-    };
-  };
+  xAxis?: PlotAxisInputs;
+  yAxis?: PlotAxisInputs;
   grid?: boolean;
   disableZoom?: boolean;
   title?: string;
