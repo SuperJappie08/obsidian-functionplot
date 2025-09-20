@@ -1,3 +1,6 @@
+> [!NOTE]
+> Based on [leonhma/obsidian-functionplot](https://github.com/leonhma/obsidian-functionplot) V2 and [HerrChaos/obsidian-functionplot](https://github.com/HerrChaos/obsidian-functionplot) V2 Work.
+
 # obsidian-functionplot
 
 A plugin for displaying mathematical graphs in obsidian.md.
