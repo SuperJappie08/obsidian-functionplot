@@ -60,7 +60,7 @@ jobs:
           git push origin master
 
       - name: Upload assets to a Release
-        uses: AButler/upload-release-assets@v3
+        uses: AButler/upload-release-assets@v3.0
         with:
           repo-token: ${{ github.token }}
           files: "main.js;manifest.json;obsidian-functionplot.zip"
