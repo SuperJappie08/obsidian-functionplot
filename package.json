@@ -1,9 +1,14 @@
 {
   "name": "obsidian-functionplot",
   "version": "2.0.0",
-  "description": "A plugin for displaying mathematical functions in obsidian.md.",
-  "repository": "https://github.com/leonhma/obsidian-functionplot",
+  "description": "A plugin for displaying mathematical functions in obsidian.md. Based on leonhma's work.",
+  "repository": "https://github.com/SuperJappie08/obsidian-functionplot",
   "author": "leonhma",
+  "maintainers": [
+    {
+      "name": "SuperJappie08"
+    }
+  ],
   "license": "MIT",
   "private": true,
   "scripts": {

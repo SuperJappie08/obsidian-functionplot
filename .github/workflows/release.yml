@@ -11,7 +11,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     env:
-      BUILD_LINK: https://github.com/leonhma/obsidian-functionplot/releases/tag/${{ github.event.release.tag_name }}
+      BUILD_LINK: https://github.com/${{ github.repository }}/releases/tag/${{ github.event.release.tag_name }}
 
     steps:
       - name: Setup Node.js environment

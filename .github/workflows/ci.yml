@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      BUILD_LINK: https://github.com/SuperJappie08/obsidian-functionplot/actions/runs/${{ github.run_id }}
+      BUILD_LINK: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
     steps:
       - uses: actions/checkout@v5
