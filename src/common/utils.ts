@@ -150,6 +150,7 @@ export function toFunctionPlotOptions(
     xAxis: {
       label: options.xAxis?.label ?? undefined,
       type: options.xAxis?.type ?? undefined,
+      invert: options.xAxis?.invert ?? undefined,
       domain: [
         (options.xAxis ?? { domain: FALLBACK_PLOT_DOMAIN_INPUTS }).domain
           ?.min ?? (FALLBACK_PLOT_DOMAIN_INPUTS.min as number),
@@ -160,6 +161,7 @@ export function toFunctionPlotOptions(
     yAxis: {
       label: options.yAxis?.label ?? undefined,
       type: options.yAxis?.type ?? undefined,
+      invert: options.yAxis?.invert ?? undefined,
       domain: [
         (options.yAxis ?? { domain: FALLBACK_PLOT_DOMAIN_INPUTS }).domain
           ?.min ?? (FALLBACK_PLOT_DOMAIN_INPUTS.min as number),

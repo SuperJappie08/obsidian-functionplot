@@ -31,12 +31,14 @@ disableZoom: True # Optional (Default: False)
 xAxis: # Can be ommited
     label: "x label" # Optional (Default: '')
     type: "log" # Optional (Default: 'linear', one of: ['linear', 'log'])
+    invert: True  # Optional (Default: False)
     domain: # Optional can be ommited
         min: 0 # Optional (Default: -10)
         max: 3 # Optional (Default: 10)
 yAxis: # Can be ommited
     label: "y label" # Optional (Default: '')
     type: "log" # Optional (Default: 'linear', one of: ['linear', 'log'])
+    invert: True  # Optional (Default: False)
     domain: # Optional can be ommited
         min: 0 # Optional (Default: -10)
         max: 3 # Optional (Default: 10)

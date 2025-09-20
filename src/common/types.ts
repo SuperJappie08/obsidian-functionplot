@@ -75,6 +75,7 @@ export interface PlotDomainInputs {
 export interface PlotAxisInputs {
   label?: string;
   type?: "linear" | "log";
+  invert?: boolean;
   domain?: PlotDomainInputs;
 }
 
