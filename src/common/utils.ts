@@ -61,6 +61,14 @@ export function toFunctionPlotOptions(
     inputs: FunctionInputs,
     plugin: ObsidianFunctionPlot
   ): FunctionPlotDatum {
+    const scope =
+      Object.keys(options.constants).length > 0
+        ? (Object.keys(options.constants).reduce((acc, key) => {
+            acc[key] = options.constants[key].value;
+            return acc;
+          }, {}) as unknown as { [_: string]: number })
+        : undefined;
+
     const output: FunctionPlotDatum = {
       fnType: inputs.fnType,
       graphType: inputs.graphType ?? undefined,
@@ -72,13 +80,7 @@ export function toFunctionPlotOptions(
         inputs.fnType === "points" && inputs.points !== DEFAULT_POINTS
           ? inputs.points
           : undefined,
-      scope:
-        Object.keys(options.constants).length > 0
-          ? (Object.keys(options.constants).reduce((acc, key) => {
-              acc[key] = options.constants[key].value;
-              return acc;
-            }, {}) as unknown as { [_: string]: number })
-          : undefined,
+      scope: scope,
       vector:
         inputs.fnType === "vector" &&
         typeof inputs.vector.x === "number" &&
@@ -114,6 +116,7 @@ export function toFunctionPlotOptions(
           ? undefined
           : {
               fn: parseLaTeX(inputs.derivative?.fn, plugin),
+              scope: scope,
               x0: inputs.derivative?.x0 ?? undefined,
               updateOnMouseMove: inputs.derivative?.updateOnMouseMove ?? true,
             },

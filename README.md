@@ -13,6 +13,86 @@ _This file only contains basic instructions to get you to using this plugin quic
 
 ## 🔮 How to use
 
+Since version `2.0.0` a new description format is used (YAML or JSON based):
+
+````yaml
+```functionplot
+title: "A cool Title" # Optional (Default: '')
+constants: # Can be ommited
+    C0:
+        min: -1
+        max: 10
+        step: 1
+        value: 2
+    C2: { min: -1.0, max: 1.0, step: 0.1, value: 0 }
+legends: True # Optional (Default: False)
+grid: False # Optional (Default: True)
+disableZoom: True # Optional (Default: False)
+xAxis: # Can be ommited
+    label: "x label" # Optional (Default: '')
+    type: "log" # Optional (Default: 'linear', one of: ['linear', 'log'])
+    domain: # Optional can be ommited
+        min: 0 # Optional (Default: -10)
+        max: 3 # Optional (Default: 10)
+yAxis: # Can be ommited
+    label: "y label" # Optional (Default: '')
+    type: "log" # Optional (Default: 'linear', one of: ['linear', 'log'])
+    domain: # Optional can be ommited
+        min: 0 # Optional (Default: -10)
+        max: 3 # Optional (Default: 10)
+tip: # Can be ommited
+    renderer: "???" # Optional (Default: Some function)
+    xLine: True # Display X-line, Optional (Default: False)
+    yLine: True # Display Y-line, Optional (Default: False)
+data: # Plottypes go here
+    -   fnType: linear # Required, type of Function
+        graphType: interval  # Optional (Default: interval, valid: [interval, polyline, scatter])
+        fn: (x^2)+x  # Required, some X depended function
+        nSamples: 10 # Optional (Default: Enough?)
+        range:  # Optional, Range of x
+            min: -1  # Optional (Default: -INF)
+            max: 2  # Optional (Default: INF)
+        derivative: # Can be omitted
+            fn: 2*x  # Optional, ommit to disable
+            x0: 1.0  # point to calulae the derivative off. Optional
+            updateOnMouseMove: False  # If true use mouse position as x0, Optional (Default: True)
+
+    -   fnType: polar  # Required, type of Function
+        graphType: polyline  # Required, valid: [polyline, scatter]
+        r: theta+PI
+        nSamples: 10 # Optional (Default: Enough?)
+        range:  # Optional, Range of theta
+            min: -1  # Optional (Default: -PI)
+            max: 2  # Optional (Default: PI)
+
+    -   fnType: vector # Required, type of Function
+        graphType: polyline  # Required, valid: [polyline, scatter]
+        vector:  # Required, The direction of the vector
+            x: 2
+            y: 2
+        offset:  # Required, The start point of the vector
+            x: 1
+            y: 2
+
+    -   fnType: points # Required, type of Function
+        graphType: polyline  # Required, valid: [polyline, scatter]
+        points:
+            -   [0, 0]
+            -   [1, 0]
+            -   [0, 2]
+
+        # Common parameters
+        id: some-id # Optional
+        name: Name for Legend # Optional (Default: '')
+        color: '#ff0000;'  # Optional, some hex color (Required for propper legend)
+        closed: True  # Render the region (until y=0 for functions), Optional (Default: False)
+        skipTip: True  # Disable hover tip Optional (Default: False)
+        scope:  # BROKEN # Optional, variables able to be used in functions
+            some_var: 2
+            other_var: 2
+```
+````
+
 ### With Command
 
 Since version `1.1.0` you can create plots via a handy GUI with live-preview functionality.
